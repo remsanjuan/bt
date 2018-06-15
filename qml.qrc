@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>images/Background.jpg</file>
+        <file>images/weight-loss.png</file>
+        <file>images/Background2.jpg</file>
+        <file>images/circle.png</file>
+        <file>images/Background3.jpg</file>
+        <file>images/scale.png</file>
+        <file>settings.qml</file>
+        <file>NeedleScale.qml</file>
+        <file>js/app.js</file>
+        <file>js/simpleheat.js</file>
+        <file>js/data.js</file>
+        <file>Heatmap.qml</file>
+    </qresource>
+</RCC>
