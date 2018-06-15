@@ -53,12 +53,7 @@ void Scanner::scannerStarted()
 void Scanner::startClicked()
 {
     if(t7interface->getStatus()){
-
-//        if(!stopped){
-           emit startscanning();
-//        }
-
-
+       emit startscanning();
     }
 }
 
