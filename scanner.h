@@ -1,6 +1,6 @@
 #ifndef SCANNER_H
 #define SCANNER_H
-
+//test
 #include <QObject>
 #include "t7interface.h"
 
