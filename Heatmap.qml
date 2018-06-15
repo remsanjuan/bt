@@ -10,7 +10,7 @@ Item {
 //    property real _r:width/numrows
     property real _r:hticks
     property real _opac:0.05
-    property variant values
+    property var values
     property int numrows:0
     property int numcolumns:0
     property real sizematwidth:0
@@ -114,7 +114,7 @@ Item {
         property real max:id_root.maximum
         property var _circle:circleCanvas
         property bool start: id_root.start
-        property variant val: id_root.values
+        property var val: id_root.values
         property bool cup:id_root.cu
         property bool cdown: id_root.cd
 
@@ -245,7 +245,13 @@ if(id_root.numcolumns == id_root.numrows){
             ctx.drawImage(colored, 0, 0);
 
 
+
+
         }//end of onPaint:
+
+        onPainted: {
+            scanner.toggle = !scanner.toggle;
+        }
 
 
     }//end of id:mainCanvas
@@ -258,7 +264,7 @@ if(id_root.numcolumns == id_root.numrows){
         height:id_root.vticks * id_root.numcolumns
         anchors.centerIn: parent
        // width:height
-        property variant val: id_root.values
+        property var val: id_root.values
 
 
         /*
@@ -339,13 +345,14 @@ if(id_root.numcolumns == id_root.numrows){
         width:id_root.hticks * id_root.numrows
          height:id_root.vticks * id_root.numcolumns
          anchors.centerIn: parent
-        property variant val: id_root.values
+        property var val: id_root.values
 
         onValChanged: {
             requestPaint();
         }
 
         onPaint: {
+           // console.log(val[0]);
             var ctx = getContext('2d');
             ctx.reset();
             ctx.clearRect(0, 0, width, height);

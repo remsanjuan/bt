@@ -31,9 +31,42 @@ ApplicationWindow {
     title: qsTr("Boditrak Scanner")
     color: "#243037"
 
+    Component.onCompleted: {
+        MyScript.request('http://127.0.0.1/api', function (o) {
+
+            var d= JSON.parse(o.responseText);
+            scanner.serial = d.sensors[0].name;
+            hm.numcolumns = d.sensors[0].columns;
+            hm.numrows = d.sensors[0].rows;
+            hm.sizematwidth = d.sensors[0].width;
+            hm.sizematheight = d.sensors[0].height;
+            hm.maximum = d.sensors[0].maximum;
+
+                var gridsize = 340/hm.numcolumns;
+                rectangleBox.width = gridsize * hm.numrows;
+                rectangleBox.height = gridsize * hm.numcolumns;
+                app.width = gridsize * hm.numcolumns + 180 + 225 + 60;
+                if(rectangleBox.width > 800){
+                    gridsize = 800 / hm.numrows;
+                    rectangleBox.width = 800;
+                    rectangleBox.height = gridsize * hm.numcolumns;
+
+                }
+
+                hm.width = gridsize * hm.numcolumns;
+                hm.height = gridsize * hm.numrows;
+                app.width = gridsize * hm.numrows + 180 + 225 + 60;
+                app.setX(Screen.width / 2 - app.width / 2);
+                app.setY(Screen.height / 2 - app.height / 2);
+
+
+            });
+
+    }
 
     Scanner {
         id: scanner
+        property bool toggle:false
         property string s_units
         property string s_name
         property string s_actualweight
@@ -52,6 +85,16 @@ ApplicationWindow {
         property int w
         property int h
 
+        onToggleChanged: {
+            //console.log("onToggleChanged:");
+            MyScript.request('http://127.0.0.1/api', function (o) {
+
+                var d= JSON.parse(o.responseText);
+//console.log(d);
+                hm.values = d.frames[0].readings[0];
+
+                });
+        }
 
         onStatusChanged: {
 //           console.log(newStatus);
@@ -512,8 +555,9 @@ ApplicationWindow {
                 stopButton.enabled=true;
                 settingsButton.enabled=false;
                 //scanner.startClicked(calibrator.cal_units, calibrator.cal_cycles, calibrator.cal_targets, calibrator.cal_holdtimes);
-                scanner.startClicked();
-                MyScript.test();
+                scanner.toggle=true;
+                //scanner.startClicked();
+
 
                 /*
                 //var hey = new MyHeatmap.simpleheat(mycanvas);
