@@ -222,7 +222,10 @@ Item {
             ctx.drawImage(colored, 0, 0);
 
         }//end of onPaint:
-
+        onPainted: {
+            if(scanner.started)
+            scanner.toggle = !scanner.toggle;
+        }
     }//end of id:mainCanvas
 
 
@@ -310,9 +313,7 @@ Item {
             }
 
         }
-        onPainted: {
-            scanner.toggle = !scanner.toggle;
-        }
+
     }//end of valuesCanvas
 
 }

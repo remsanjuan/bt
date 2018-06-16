@@ -31,44 +31,54 @@ ApplicationWindow {
     title: qsTr("Boditrak Scanner")
     color: "#243037"
 
-    Component.onCompleted: {
-        var u;
-        var urlArray = ["127.0.0.1","10.0.0.1","192.168.173.1","192.168.137.1"];
-        for(u=0; u<urlArray.length; u++){
-        MyScript.request('http://'+urlArray[u]+'/api', function (o) {
-            var d= JSON.parse(o.responseText);
-            scanner.serial = d.sensors[0].name;
-            scanner.url = d.device.address;
 
-            hm.numcolumns = d.sensors[0].columns;
-            hm.numrows = d.sensors[0].rows;
-            hm.sizematwidth = d.sensors[0].width;
-            hm.sizematheight = d.sensors[0].height;
-            hm.maximum = d.sensors[0].maximum;
-            scanner.sensorArea = (hm.sizematwidth/hm.numcolumns)*(hm.sizematheight/hm.numrows);
 
-                var gridsize = 340/hm.numcolumns;
-                rectangleBox.width = gridsize * hm.numrows;
-                rectangleBox.height = gridsize * hm.numcolumns;
-                app.width = gridsize * hm.numcolumns + 180 + 225 + 60;
-                if(rectangleBox.width > 800){
-                    gridsize = 800 / hm.numrows;
-                    rectangleBox.width = 800;
+    property string uu
+
+    Rectangle{
+        property string w;
+        Component.onCompleted: {
+            var u;
+            var urlArray = ["127.0.0.1","10.0.0.1","192.168.173.1","192.168.137.1"];
+            for(u=0; u<urlArray.length; u++){
+            MyScript.request('http://'+urlArray[u]+'/api', function (o) {
+                var d= JSON.parse(o.responseText);
+                scanner.serial = d.sensors[0].name;
+                scanner.url = d.device.address;
+                w = d.device.address;
+
+                hm.numcolumns = d.sensors[0].columns;
+                hm.numrows = d.sensors[0].rows;
+                hm.sizematwidth = d.sensors[0].width;
+                hm.sizematheight = d.sensors[0].height;
+                hm.maximum = d.sensors[0].maximum;
+                scanner.sensorArea = (hm.sizematwidth/hm.numcolumns)*(hm.sizematheight/hm.numrows);
+
+                    var gridsize = 340/hm.numcolumns;
+                    rectangleBox.width = gridsize * hm.numrows;
                     rectangleBox.height = gridsize * hm.numcolumns;
+                    app.width = gridsize * hm.numcolumns + 180 + 225 + 60;
+                    if(rectangleBox.width > 800){
+                        gridsize = 800 / hm.numrows;
+                        rectangleBox.width = 800;
+                        rectangleBox.height = gridsize * hm.numcolumns;
 
-                }
+                    }
 
-                hm.width = gridsize * hm.numcolumns;
-                hm.height = gridsize * hm.numrows;
-                app.width = gridsize * hm.numrows + 180 + 225 + 60;
-                app.setX(Screen.width / 2 - app.width / 2);
-                app.setY(Screen.height / 2 - app.height / 2);
+                    hm.width = gridsize * hm.numcolumns;
+                    hm.height = gridsize * hm.numrows;
+                    app.width = gridsize * hm.numrows + 180 + 225 + 60 + 200;
+                    app.setX(Screen.width / 2 - app.width / 2);
+                    app.setY(Screen.height / 2 - app.height / 2);
 
-            });
+                });
 
-        }//end of for(
+            }//end of for(
+            console.log("URL: "+w);
+        }
 
     }
+
 
     Scanner {
         id: scanner
@@ -90,13 +100,14 @@ ApplicationWindow {
         property double area:0
         property double sensorArea:0
         property string url:""
+        property bool started:false
 
         property int w
         property int h
 
         onToggleChanged: {
             //console.log("onToggleChanged:");
-            console.log("URL:" + scanner.url);
+
             MyScript.request('http://'+scanner.url+'/api', function (o) {
                 var d= JSON.parse(o.responseText);
 
@@ -603,7 +614,8 @@ ApplicationWindow {
                 stopButton.enabled=true;
                 settingsButton.enabled=false;
                 //scanner.startClicked(calibrator.cal_units, calibrator.cal_cycles, calibrator.cal_targets, calibrator.cal_holdtimes);
-                scanner.toggle=true;
+                scanner.started=true;
+                scanner.toggle=!scanner.toggle;
                 //scanner.startClicked();
 
 
@@ -669,6 +681,8 @@ ApplicationWindow {
                 startButton.enabled=true;
                 settingsButton.enabled=true;
                 hm.start = true;
+                scanner.started=false;
+                //scanner.toggle=!scanner.toggle;
 
             }
         } //end of stopButton
@@ -856,7 +870,7 @@ ApplicationWindow {
 
     Rectangle {
         id:heatmapRectangle
-        width:rectangleBox.width + 180
+        width:rectangleBox.width + 180 + 200
         height:rectangleBox.height + 20
         anchors{
             left:parent.left
@@ -893,7 +907,8 @@ ApplicationWindow {
             id:heatmapSidebar
             //width: parent.width - 370
             //height: parent.height - 20
-            width: 160
+            //width: 160
+            width: heatmapRectangle.width - hm.width
             height: parent.height - 20
 
             color: "#243037"
