@@ -153,12 +153,12 @@ Item {
         }
 
         onWidthChanged: {
-            requestPaint();
+ //           requestPaint();
         }
 
 
         onValChanged: {
-            requestPaint();
+//            requestPaint();
         }
 
         onStartChanged: {
@@ -384,7 +384,9 @@ if(id_root.numcolumns == id_root.numrows){
 }
 
         }
-
+        onPainted: {
+            scanner.toggle = !scanner.toggle;
+        }
     }//end of valuesCanvas
 
 }
