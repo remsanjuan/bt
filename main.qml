@@ -36,11 +36,14 @@ ApplicationWindow {
 
             var d= JSON.parse(o.responseText);
             scanner.serial = d.sensors[0].name;
+
             hm.numcolumns = d.sensors[0].columns;
             hm.numrows = d.sensors[0].rows;
             hm.sizematwidth = d.sensors[0].width;
             hm.sizematheight = d.sensors[0].height;
             hm.maximum = d.sensors[0].maximum;
+            scanner.sensorArea = (hm.sizematwidth/hm.numcolumns)*(hm.sizematheight/hm.numrows);
+
 
                 var gridsize = 340/hm.numcolumns;
                 rectangleBox.width = gridsize * hm.numrows;
@@ -78,9 +81,11 @@ ApplicationWindow {
         property point newpoint;
         property string serial:"NO MAT"
         property string unit: "mmHg"
+        property int clipoff:5
         property double max:0
         property double ave:0
         property double area:0
+        property double sensorArea:0
 
         property int w
         property int h
@@ -92,6 +97,45 @@ ApplicationWindow {
                 var d= JSON.parse(o.responseText);
 //console.log(d);
                 hm.values = d.frames[0].readings[0];
+                var m_max = 0;
+                var m_total = 0;
+                var m_active = 0;
+
+                    for(var x=0; x<hm.values.length; x++){
+                        if(hm.values[x] >= scanner.clipoff){
+                            if(hm.values[x] > m_max){
+                                m_max = hm.values[x];
+                            }
+                            m_total += hm.values[x];
+                            m_active++;
+                        }
+                    } //end of for(var x=0...
+                    scanner.max = m_max;
+                    if(m_active){
+                        scanner.area = m_active * scanner.sensorArea;
+                        scanner.ave = m_total / m_active;
+                        scanner.s_weight = scanner.area * scanner.ave / 10000;
+                        scanner.s_percentdifference = ((scanner.s_weight - scanner.s_actualweight)/scanner.s_actualweight)*100;
+                    }
+                    if(counter <= 20){
+                        percentDifferenceSeries.append(counter,s_percentdifference);
+                    }else{
+                        for(var i = 1; i <= 20; i++){
+                            newpoint = percentDifferenceSeries.at(i);
+                            percentDifferenceSeries.remove(i-1);
+                            percentDifferenceSeries.insert(i-1,i-1,newpoint.y);
+                            if(i == 20){
+                                percentDifferenceSeries.remove(i);
+                                percentDifferenceSeries.insert(i,i,s_percentdifference);
+
+                            }
+                       }
+                    }
+                    counter++;
+                    m_max = 0;
+                    m_total=0;
+                    m_active=0;
+
 
                 });
         }
