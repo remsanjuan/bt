@@ -2,7 +2,7 @@
 #define SCANNER_H
 //test
 #include <QObject>
-#include "t7interface.h"
+//#include "t7interface.h"
 
 class Scanner : public QObject
 {
@@ -33,7 +33,7 @@ public slots:
 
 
 private:
-    T7Interface *t7interface;
+//    T7Interface *t7interface;
 
     bool newStatus;
     bool stopped;

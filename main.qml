@@ -32,7 +32,7 @@ ApplicationWindow {
     color: "#243037"
 
     Component.onCompleted: {
-        MyScript.request('http://127.0.0.1/api', function (o) {
+        MyScript.request('http://10.0.0.1/api', function (o) {
 
             var d= JSON.parse(o.responseText);
             scanner.serial = d.sensors[0].name;
@@ -87,7 +87,7 @@ ApplicationWindow {
 
         onToggleChanged: {
             //console.log("onToggleChanged:");
-            MyScript.request('http://127.0.0.1/api', function (o) {
+            MyScript.request('http://10.0.0.1/api', function (o) {
 
                 var d= JSON.parse(o.responseText);
 //console.log(d);
