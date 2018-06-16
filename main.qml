@@ -33,7 +33,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         var u;
-        var urlArray = ["10.0.0.1","10.0.0.1","192.168.173.1","192.168.137.1"];
+        var urlArray = ["127.0.0.1","10.0.0.1","192.168.173.1","192.168.137.1"];
         for(u=0; u<urlArray.length; u++){
         MyScript.request('http://'+urlArray[u]+'/api', function (o) {
             var d= JSON.parse(o.responseText);
