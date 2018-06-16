@@ -32,10 +32,13 @@ ApplicationWindow {
     color: "#243037"
 
     Component.onCompleted: {
-        MyScript.request('http://10.0.0.1/api', function (o) {
-
+        var u;
+        var urlArray = ["10.0.0.1","10.0.0.1","192.168.173.1","192.168.137.1"];
+        for(u=0; u<urlArray.length; u++){
+        MyScript.request('http://'+urlArray[u]+'/api', function (o) {
             var d= JSON.parse(o.responseText);
             scanner.serial = d.sensors[0].name;
+            scanner.url = d.device.address;
 
             hm.numcolumns = d.sensors[0].columns;
             hm.numrows = d.sensors[0].rows;
@@ -43,7 +46,6 @@ ApplicationWindow {
             hm.sizematheight = d.sensors[0].height;
             hm.maximum = d.sensors[0].maximum;
             scanner.sensorArea = (hm.sizematwidth/hm.numcolumns)*(hm.sizematheight/hm.numrows);
-
 
                 var gridsize = 340/hm.numcolumns;
                 rectangleBox.width = gridsize * hm.numrows;
@@ -62,8 +64,9 @@ ApplicationWindow {
                 app.setX(Screen.width / 2 - app.width / 2);
                 app.setY(Screen.height / 2 - app.height / 2);
 
-
             });
+
+        }//end of for(
 
     }
 
@@ -72,9 +75,9 @@ ApplicationWindow {
         property bool toggle:false
         property string s_units
         property string s_name
-        property string s_actualweight
+        property double s_actualweight:50.0
         property double s_weight: 0
-        property double s_percentdifference
+        property double s_percentdifference:0
         property string s_status
         property int counter:0
         property point oldpoint;
@@ -86,16 +89,17 @@ ApplicationWindow {
         property double ave:0
         property double area:0
         property double sensorArea:0
+        property string url:""
 
         property int w
         property int h
 
         onToggleChanged: {
             //console.log("onToggleChanged:");
-            MyScript.request('http://10.0.0.1/api', function (o) {
-
+            console.log("URL:" + scanner.url);
+            MyScript.request('http://'+scanner.url+'/api', function (o) {
                 var d= JSON.parse(o.responseText);
-//console.log(d);
+
                 hm.values = d.frames[0].readings[0];
                 var m_max = 0;
                 var m_total = 0;

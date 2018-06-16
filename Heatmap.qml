@@ -152,18 +152,8 @@ Item {
             color:"black"
         }
 
-        onWidthChanged: {
- //           requestPaint();
-        }
-
-
         onValChanged: {
-//            requestPaint();
-        }
-
-        onStartChanged: {
-           // console.log("onStartChanged");
-           // requestPaint();
+            requestPaint();
         }
 
         onPaint: {
@@ -189,46 +179,33 @@ Item {
              ctx3.fillRect(0, 0, 1, 256);
 
              var grad = ctx3.getImageData(0, 0, 1, 256);
-             ctx3.clearRect(0, 0, 1, 256);
+//             ctx3.clearRect(0, 0, 1, 256);
              ctx3.reset();
              gradientCanvas.requestPaint();
-            var ctx = getContext("2d");
-            ctx.clearRect(0, 0, width, height);
-             ctx.reset();
- //            ctx.font = "bold 9px sans-serif";
- //            ctx.fillStyle = "white";
-/*
-            for (var i = 0, len = Mydata.data.length, p; i < len; i++) {
-                p = Mydata.data[i];
-                ctx.globalAlpha = Math.min(Math.max(p[2] / max, minOpacity === undefined ? 0.05 : minOpacity), 1);
-                ctx.drawImage(circleCanvas.cir, p[0] - circleCanvas.r2, p[1] - circleCanvas.r2);
-            }
-*/
-if(id_root.numcolumns == id_root.numrows){
-            for (var i = 0, len = val.length; i < len; i++) {
-                var x2 = ((i % id_root.numcolumns)*gridCanvas.h_ticks)+(gridCanvas.h_ticks/2);
-                var y2 = (Math.floor(i/id_root.numrows))*gridCanvas.v_ticks + gridCanvas.v_ticks/2;
+             var ctx = getContext("2d");
 
-                ctx.globalAlpha = Math.min(Math.max(val[i] / max, minOpacity === undefined ? 0.05 : minOpacity), 1);
-                ctx.drawImage(circleCanvas.cir, x2 - circleCanvas.width/2, y2 - circleCanvas.height/2);
-            }
-}else{
-    //console.log("ARAY KO");
-    //console.log("width:" + width);
-    //console.log("height:" + height);
+             ctx.reset();
+
+            if(id_root.numcolumns == id_root.numrows){
+                for (var i = 0, len = val.length; i < len; i++) {
+                 var x2 = ((i % id_root.numcolumns)*gridCanvas.h_ticks)+(gridCanvas.h_ticks/2);
+                 var y2 = (Math.floor(i/id_root.numrows))*gridCanvas.v_ticks + gridCanvas.v_ticks/2;
+
+                 ctx.globalAlpha = Math.min(Math.max(val[i] / max, minOpacity === undefined ? 0.05 : minOpacity), 1);
+                 ctx.drawImage(circleCanvas.cir, x2 - circleCanvas.width/2, y2 - circleCanvas.height/2);
+                }
+            }else{
 
                 for (var j2 = 0, le = val.length; j2 < le; j2++) {
                     var y3 = ((j2 % id_root.numcolumns)*id_root.vticks)+(id_root.vticks/2);
                     var x3 = width - ((Math.floor(j2/id_root.numcolumns))*id_root.hticks);
-//console.log("x3:" + x3);
-//console.log("counter:" + j2);
+
                     ctx.globalAlpha = Math.min(Math.max(val[j2] / max, minOpacity === undefined ? 0.05 : minOpacity), 1);
                     ctx.drawImage(circleCanvas.cir, x3 - circleCanvas.width/2, y3 - circleCanvas.height/2);
                 }
-}
+            }
 
             var colored = ctx.getImageData(0, 0, width, height);
-
 
             for (var i2 = 0, len2 = colored.data.length, j; i2 < len2; i2 += 4) {
                 j = colored.data[i2 + 3]; // get gradient color from opacity value
@@ -244,15 +221,7 @@ if(id_root.numcolumns == id_root.numrows){
 
             ctx.drawImage(colored, 0, 0);
 
-
-
-
         }//end of onPaint:
-
-        onPainted: {
-            scanner.toggle = !scanner.toggle;
-        }
-
 
     }//end of id:mainCanvas
 
@@ -263,14 +232,8 @@ if(id_root.numcolumns == id_root.numrows){
        width:id_root.hticks * id_root.numrows
         height:id_root.vticks * id_root.numcolumns
         anchors.centerIn: parent
-       // width:height
         property var val: id_root.values
 
-
-        /*
-        property double h_ticks: id_root.width/(id_root.numcolumns + 1)
-        property double v_ticks: id_root.height/(id_root.numrows + 1)
-        */
         property double h_ticks: id_root.hticks
         property double v_ticks: id_root.vticks
 
@@ -279,10 +242,7 @@ if(id_root.numcolumns == id_root.numrows){
         }
 
         onPaint: {
-//            console.log("width: " + width);
-//            console.log("height: " + height);
-//            console.log("hticks: " + id_root.hticks);
-//            console.log("vticks: " + id_root.vticks);
+
             var ctx = getContext('2d');
             ctx.clearRect(0, 0, width, height);
             ctx.lineWidth = 1;
@@ -296,12 +256,7 @@ if(id_root.numcolumns == id_root.numrows){
                 ctx.lineTo(i*h_ticks,v_ticks*id_root.numcolumns);
                 ctx.stroke();
             }
-            /*
-            ctx.beginPath();
-            ctx.moveTo(width,0);
-            ctx.lineTo(width,height);
-            ctx.stroke();
-            */
+
 //horizontal lines
             for(var j=0; j<=id_root.numcolumns ; j++){
                 ctx.beginPath();
@@ -309,32 +264,7 @@ if(id_root.numcolumns == id_root.numrows){
                 ctx.lineTo(h_ticks*id_root.numrows,j*v_ticks);
                 ctx.stroke();
             }
-            /*
-            ctx.beginPath();
-            ctx.moveTo(0,height);
-            ctx.lineTo(width,height);
-            ctx.stroke();
-            */
 
-
-
-        //   ctx.rotate(Math.PI/3);
-          //  ctx.drawImage(c, 0, 0);
-
-
-
-
-          //  ctx.restore();
-
-/*
-            for (var d = 0, len = val.length; d < len; d++) {
-                var x2 = ((d % id_root.numcolumns)*h_ticks)+(h_ticks/2);
-                var y2 = (Math.floor(d/id_root.numrows))*h_ticks + h_ticks/2;
-
-                ctx.fillText(val[d], x2-h_ticks/4, y2+v_ticks/4);
-                ctx.stroke();
-            }
-*/
         }
 
     }//end of gridCanvas
@@ -360,28 +290,24 @@ if(id_root.numcolumns == id_root.numrows){
             ctx.lineWidth = 1;
             ctx.strokeStyle = "#0f0e0e"
             ctx.globalAlpha=0.7;
-if(id_root.numcolumns == id_root.numrows){
-            for (var d = 0, len = val.length; d < len; d++) {
-                var x2 = ((d % id_root.numcolumns)*gridCanvas.h_ticks)+(gridCanvas.h_ticks/2);
-                var y2 = (Math.floor(d/id_root.numrows))*gridCanvas.v_ticks + gridCanvas.v_ticks/2;
+            if(id_root.numcolumns == id_root.numrows){
+                for (var d = 0, len = val.length; d < len; d++) {
+                 var x2 = ((d % id_root.numcolumns)*gridCanvas.h_ticks)+(gridCanvas.h_ticks/2);
+                 var y2 = (Math.floor(d/id_root.numrows))*gridCanvas.v_ticks + gridCanvas.v_ticks/2;
 
                   ctx.fillText(val[d], x2-gridCanvas.h_ticks/8, y2+gridCanvas.v_ticks/8);
 
-            }
-}else{
-    //console.log("ARAY KO");
-    //console.log("width:" + width);
-    //console.log("height:" + height);
+                }
+            }else{
 
                 for (var j2 = 0, le = val.length; j2 < le; j2++) {
                     var y3 = ((j2 % id_root.numcolumns)*id_root.vticks)+(id_root.vticks/2);
                     var x3 = width - ((Math.floor(j2/id_root.numcolumns))*id_root.hticks);
-//console.log("x3:" + x3);
-//console.log("counter:" + j2);
+
                     ctx.fillText(val[j2], x3-id_root.hticks/2, y3+id_root.vticks/4);
 
                 }
-}
+            }
 
         }
         onPainted: {
