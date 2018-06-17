@@ -616,7 +616,7 @@ ApplicationWindow {
                 //scanner.startClicked(calibrator.cal_units, calibrator.cal_cycles, calibrator.cal_targets, calibrator.cal_holdtimes);
                 scanner.started=true;
                 scanner.toggle=!scanner.toggle;
-                //scanner.startClicked();
+                scanner.startClicked();
 
 
                 /*
